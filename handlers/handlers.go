@@ -60,7 +60,7 @@ func CreateHandler() httpHandler {
 				}
 			} else {
 				writer.WriteHeader(400)
-				writer.Write([]byte(fmt.Sprintf("Error has hapened: %v", err)))
+				writer.Write([]byte(fmt.Sprintf("Error has hapened during request's body deserialization: %v", err)))
 			}
 		},
 		GetProducts: func(writer http.ResponseWriter, request *http.Request) {
