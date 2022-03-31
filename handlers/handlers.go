@@ -12,7 +12,7 @@ import (
 
 var products = make([]models.Product, 0)
 
-var m sync.Mutex
+var mutex sync.Mutex
 
 type routeHandler func(writer http.ResponseWriter, request *http.Request)
 
@@ -49,15 +49,14 @@ func CreateHandler() httpHandler {
 
 			var product models.Product
 			if err := decoder.Decode(&product); err == nil {
+				mutex.Lock()
 				product.Id = len(products) + 1
-
-				m.Lock()
 				products = append(products, product)
-				m.Unlock()
+				mutex.Unlock()
 
-				if resp, err := json.Marshal(product); err == nil {
+				if serialized, err := json.Marshal(product); err == nil {
 					writer.Header().Add("Content-Type", "application/json")
-					writer.Write(resp)
+					writer.Write(serialized)
 				}
 			} else {
 				writer.WriteHeader(400)
@@ -65,9 +64,9 @@ func CreateHandler() httpHandler {
 			}
 		},
 		GetProducts: func(writer http.ResponseWriter, request *http.Request) {
-			if resp, err := json.Marshal(products); err == nil {
+			if serialized, err := json.Marshal(products); err == nil {
 				writer.Header().Add("Content-Type", "application/json")
-				writer.Write(resp)
+				writer.Write(serialized)
 			}
 		},
 	}

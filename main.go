@@ -12,7 +12,7 @@ func main() {
 		Addr:    "localhost:3000",
 		Handler: handlers.CreateHandler(),
 	}
-	if error := server.ListenAndServe(); error != nil {
-		fmt.Printf("Error has happened: %v", error)
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Printf("Error has happened during server startup: %v", err)
 	}
 }
